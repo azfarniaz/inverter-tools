@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.0)
 set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-Wno-psabi)
 
-project(inverter-tools VERSION 1.4.0)
+project(inverter-tools VERSION 1.4.99)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX /usr/local/bin)
@@ -97,10 +97,3 @@ target_link_libraries(testserial ${LIBSERIALPORT_LIBRARY})
 target_include_directories(testserial PRIVATE
         ${LIBSERIALPORT_INCLUDE_DIR}
         third_party/hexdump)
-
-
-# inverterd
-#add_executable(inverterd
-#        src/inverterd.cc)
-#target_link_libraries(inverterd ${HIDAPI_LIBRARY} ${LIBSERIALPORT_LIBRARY} m)
-# TODO install

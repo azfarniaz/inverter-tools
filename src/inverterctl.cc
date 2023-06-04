@@ -78,6 +78,9 @@ static void usage(const char* progname) {
            "USB device options:\n"
            "    --usb-vendor-id <ID>: Vendor ID (default: " << std::setw(4) << voltronic::USBDevice::VENDOR_ID << ")\n"
            "    --usb-device-id <ID>: Device ID (default: " << std::setw(4) << voltronic::USBDevice::PRODUCT_ID << ")\n"
+           "\n"
+           "    Alternatively, you can specify device path (e.g., /dev/hidraw0):\n"
+           "    --usb-path <PATH>: Device path\n"
            "\n";
     std::cout.flags(f);
     std::cout <<
@@ -95,7 +98,7 @@ static void usage(const char* progname) {
            "    get-year-generated <yyyy>\n"
            "    get-month-generated <yyyy> <mm>\n"
            "    get-day-generated <yyyy> <mm> <dd>\n"
-           "    get-series-number\n"
+           "    get-serial-number\n"
            "    get-cpu-version\n"
            "    get-rated\n"
            "    get-status\n"
@@ -109,55 +112,55 @@ static void usage(const char* progname) {
            "    get-errors\n"
            "    get-flags\n"
            "    get-rated-defaults\n"
-           "    get-allowed-charging-currents\n"
-           "    get-allowed-ac-charging-currents\n"
-           "    get-ac-charging-time\n"
-           "    get-ac-loads-supply-time\n"
-           "    set-loads-supply 0|1\n"
+           "    get-allowed-charge-currents\n"
+           "    get-allowed-ac-charge-currents\n"
+           "    get-ac-charge-time\n"
+           "    get-ac-supply-time\n"
+           "    set-ac-supply 0|1\n"
            "    set-flag <flag> 0|1\n"
            "    set-rated-defaults\n"
-           "    set-max-charging-current <id> <amps>\n"
-           "        id: Parallel machine ID (use 0 for single model)\n"
-           "        amps: Use get-allowed-charging-currents\n"
+           "    set-max-charge-current <id> <amps>\n"
+           "        id: Parallel machine ID\n"
+           "        amps: Use get-allowed-charge-currents\n"
            "              to see a list of allowed values.\n"
            "\n"
-           "    set-max-ac-charging-current <id> <amps>\n"
-           "        id: Parallel machine ID (use 0 for single model)\n"
-           "        amps: Use get-allowed-ac-charging-currents\n"
+           "    set-max-ac-charge-current <id> <amps>\n"
+           "        id: Parallel machine ID\n"
+           "        amps: Use get-allowed-ac-charge-currents\n"
            "              to see a list of allowed values.\n"
+           "\n"
+           "    set-max-charge-voltage <cv> <fv>\n"
+           "        cv: Constant voltage (48.0 ~ 58.4)\n"
+           "        fv: Float voltage (48.0 ~ 58.4)\n"
            "\n"
            "    set-ac-output-freq 50|60\n"
-           "    set-max-charging-voltage <cv> <fv>\n"
-           "        cv: Constant voltage (48.0 ~ 58.4).\n"
-           "        fv: Float voltage (48.0 ~ 58.4).\n"
-           "\n"
            "    set-ac-output-voltage <v>\n"
-           "        v: " << p18::ac_output_rated_voltages << "\n"
+           "        v: " << p18::ac_output_voltages << "\n"
            "\n"
            "    set-output-source-priority SUB|SBU\n"
            "        'SUB' means " << p18::OutputSourcePriority::SolarUtilityBattery << "\n"
            "        'SBU' means " << p18::OutputSourcePriority::SolarBatteryUtility << "\n"
            "\n"
-           "    set-charging-thresholds <cv> <dv>\n"
-           "        Set battery re-charging and re-discharging voltages when\n"
-           "        utility is available.\n"
+           "    set-charge-thresholds <cv> <dv>\n"
+           "        Set battery re-charge and re-discharge voltages when\n"
+           "        grid is connected.\n"
            "\n"
-           "        cv: re-charging voltage\n"
-           "            For 12 V unit: " << p18::bat_ac_recharging_voltages_12v << "\n"
-           "            For 24 V unit: " << p18::bat_ac_recharging_voltages_24v << "\n"
-           "            For 48 V unit: " << p18::bat_ac_recharging_voltages_48v << "\n"
+           "        cv: re-charge voltage\n"
+           "            For 12 V unit: " << p18::bat_ac_recharge_voltages_12v << "\n"
+           "            For 24 V unit: " << p18::bat_ac_recharge_voltages_24v << "\n"
+           "            For 48 V unit: " << p18::bat_ac_recharge_voltages_48v << "\n"
            "\n"
-           "        dv: re-discharging voltage\n"
-           "            For 12 V unit: " << p18::bat_ac_redischarging_voltages_12v << "\n"
-           "            For 24 V unit: " << p18::bat_ac_redischarging_voltages_24v << "\n"
-           "            For 48 V unit: " << p18::bat_ac_redischarging_voltages_48v << "\n"
+           "        dv: re-discharge voltage\n"
+           "            For 12 V unit: " << p18::bat_ac_redischarge_voltages_12v << "\n"
+           "            For 24 V unit: " << p18::bat_ac_redischarge_voltages_24v << "\n"
+           "            For 48 V unit: " << p18::bat_ac_redischarge_voltages_48v << "\n"
            "\n"
-           "    set-charging-source-priority <id> <priority>\n"
-           "        id: Parallel machine ID (use 0 for a single model)\n"
+           "    set-charge-source-priority <id> <priority>\n"
+           "        id: Parallel machine ID\n"
            "        priority: SF|SU|S\n"
-           "            'SF' means " << p18::ChargerSourcePriority::SolarFirst << ",\n"
-           "            'SU' means " << p18::ChargerSourcePriority::SolarAndUtility << "\n"
-           "            'S' means " << p18::ChargerSourcePriority::SolarOnly << "\n"
+           "            'SF' means " << p18::ChargeSourcePriority::SolarFirst << "\n"
+           "            'SU' means " << p18::ChargeSourcePriority::SolarAndUtility << "\n"
+           "            'S' means " << p18::ChargeSourcePriority::SolarOnly << "\n"
            "\n"
            "    set-solar-power-priority BLU|LBU\n"
            "        'BLU' means " << p18::SolarPowerPriority::BatteryLoadUtility << "\n"
@@ -165,16 +168,16 @@ static void usage(const char* progname) {
            "\n"
            "    set-ac-input-voltage-range APPLIANCE|UPS\n"
            "    set-battery-type AGM|FLOODED|USER\n"
-           "    set-output-model <id> <model>\n"
-           "        id: Parallel machine ID (use 0 for a single model)\n"
-           "        model: SM|P|P1|P2|P3\n"
-           "            SM: " << p18::OutputModelSetting::SingleModule << "\n"
-           "            P: " << p18::OutputModelSetting::ParallelOutput << "\n"
-           "            P1: " << p18::OutputModelSetting::Phase1OfThreePhaseOutput << "\n"
-           "            P2: " << p18::OutputModelSetting::Phase2OfThreePhaseOutput << "\n"
-           "            P3: " << p18::OutputModelSetting::Phase3OfThreePhaseOutput << "\n"
+           "    set-output-mode <id> <mode>\n"
+           "        id: Machine ID\n"
+           "        mode: S|P|1|2|3\n"
+           "            S: " << p18::OutputMode::SingleOutput << "\n"
+           "            P: " << p18::OutputMode::ParallelOutput << "\n"
+           "            1: " << p18::OutputMode::Phase_1_of_3 << "\n"
+           "            2: " << p18::OutputMode::Phase_2_of_3 << "\n"
+           "            3: " << p18::OutputMode::Phase_3_of_3 << "\n"
            "\n"
-           "    set-battery-cut-off-voltage <v>\n"
+           "    set-battery-cutoff-voltage <v>\n"
            "        v: Cut-off voltage (40.0~48.0)\n"
            "\n"
            "    set-solar-configuration <id>\n"
@@ -191,13 +194,15 @@ static void usage(const char* progname) {
            "        mm:   Minutes\n"
            "        ss:   Seconds\n"
            "\n"
-           "    set-ac-charging-time <start> <end>\n"
+           "    set-ac-charge-time <start> <end>\n"
            "        start: Starting time, hh:mm format\n"
            "        end:   Ending time, hh:mm format\n"
            "\n"
-           "    set-ac-loads-supply-time <start> <end>\n"
+           "    set-ac-supply-time <start> <end>\n"
            "        start: Starting time, hh:mm format\n"
            "        end:   Ending time, hh:mm format\n"
+           "\n"
+           "Note: use 0 as parallel machine ID for single machine.\n"
            "\n"
            "Flags:\n";
     for (const p18::Flag& flag: p18::flags)
@@ -260,6 +265,7 @@ int main(int argc, char *argv[]) {
 
     u16 usbVendorId = voltronic::USBDevice::VENDOR_ID;
     u16 usbDeviceId = voltronic::USBDevice::PRODUCT_ID;
+    std::string usbDevicePath {};
 
     std::string serialDeviceName(voltronic::SerialDevice::DEVICE_NAME);
     voltronic::SerialBaudRate serialBaudRate = voltronic::SerialDevice::BAUD_RATE;
@@ -278,6 +284,7 @@ int main(int argc, char *argv[]) {
             {"device",              required_argument, nullptr, LO_DEVICE},
             {"usb-vendor-id",       required_argument, nullptr, LO_USB_VENDOR_ID},
             {"usb-device-id",       required_argument, nullptr, LO_USB_DEVICE_ID},
+            {"usb-path",            required_argument, nullptr, LO_USB_PATH},
             {"serial-name",         required_argument, nullptr, LO_SERIAL_NAME},
             {"serial-baud-rate",    required_argument, nullptr, LO_SERIAL_BAUD_RATE},
             {"serial-data-bits",    required_argument, nullptr, LO_SERIAL_DATA_BITS},
@@ -353,6 +360,10 @@ int main(int argc, char *argv[]) {
                     } catch (std::invalid_argument& e) {
                         throw std::invalid_argument(std::string("usb-device-id: invalid format: ") + e.what());
                     }
+                    break;
+
+                case LO_USB_PATH:
+                    usbDevicePath = arg;
                     break;
 
                 case LO_SERIAL_NAME:
@@ -440,8 +451,12 @@ int main(int argc, char *argv[]) {
         std::shared_ptr<voltronic::Device> dev;
         switch (deviceType) {
             case DeviceType::USB:
-                dev = std::shared_ptr<voltronic::Device>(new voltronic::USBDevice(usbVendorId,
-                                                                                  usbDeviceId));
+                if (usbDevicePath.empty()) {
+                    dev = std::shared_ptr<voltronic::Device>(new voltronic::USBDevice(usbVendorId,
+                                                                                      usbDeviceId));
+                } else {
+                    dev = std::shared_ptr<voltronic::Device>(new voltronic::USBDevice(usbDevicePath));
+                }
                 break;
 
             case DeviceType::Pseudo:
