@@ -66,9 +66,9 @@ jobs:
           tags: |
             type=schedule,pattern=nightly
             type=semver,pattern={{version}},value=v0.0.1-beta
-            type=ref,enable=true,prefix=beta,suffix=build,event=branch
-            type=ref,enable=true,prefix=beta,suffix=build,event=tag
-            type=ref,enable=true,prefix=beta,suffix=build,event=pr
+            type=ref,enable=true,prefix=beta-,suffix=-build,event=branch
+            type=ref,enable=true,prefix=beta-,suffix=-build,event=tag
+            type=ref,enable=true,prefix=beta-,suffix=-build,event=pr
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
